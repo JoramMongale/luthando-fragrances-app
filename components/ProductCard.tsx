@@ -3,9 +3,19 @@
 import React from 'react'
 import { formatCurrency } from '@/lib/utils'
 import { useCartStore } from '@/lib/cart-store'
-import { openWhatsApp } from '@/lib/whatsapp'
+import { openWhatsApp, createProductInquiryMessage } from '@/lib/whatsapp'
 import { ShoppingCart, MessageCircle, Plus, Package } from 'lucide-react'
-import type { Product } from '@/types'
+
+interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  category: 'For Him' | 'For Her' | 'Unisex'
+  image_url: string | null
+  stock_quantity: number
+  is_active: boolean
+}
 
 interface ProductCardProps {
   product: Product
@@ -19,7 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   const handleWhatsAppInquiry = () => {
-    const message = `Hi! I'd like to know more about ${product.name} (${formatCurrency(product.price)}) from your website.`
+    const message = createProductInquiryMessage(product.name, product.price)
     openWhatsApp(message)
   }
 
@@ -36,20 +46,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           ) : (
             <div className="flex flex-col items-center text-gray-400">
               <Package className="w-16 h-16 mb-2" />
-              <span className="text-sm font-medium">No Image</span>
+              <span className="text-sm font-medium">Product Image</span>
             </div>
           )}
         </div>
         
-        {product.category && (
-          <div className="absolute top-4 right-4">
-            <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
-              {product.category}
-            </span>
-          </div>
-        )}
+        <div className="absolute top-4 right-4">
+          <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
+            {product.category}
+          </span>
+        </div>
 
-        {product.stock_quantity <= 5 && product.stock_quantity > 0 && (
+        {product.stock_quantity <= 5 && (
           <div className="absolute top-4 left-4">
             <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
               Only {product.stock_quantity} left!
@@ -62,17 +70,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
           {product.name}
         </h3>
-        <p className="text-gray-600 mb-4 leading-relaxed line-clamp-2">
-          {product.description || 'Premium fragrance'}
-        </p>
+        <p className="text-gray-600 mb-4 leading-relaxed line-clamp-2">{product.description}</p>
         
         <div className="flex items-center justify-between mb-4">
           <span className="text-2xl font-bold text-blue-600">
             {formatCurrency(product.price)}
           </span>
-          {product.stock_quantity === 0 && (
-            <span className="text-sm text-red-600 font-medium">
-              Out of Stock
+          {product.stock_quantity <= 5 && (
+            <span className="text-sm text-orange-600 font-medium">
+              Low Stock!
             </span>
           )}
         </div>
@@ -80,8 +86,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex gap-2">
           <button
             onClick={handleAddToCart}
-            disabled={product.stock_quantity === 0}
-            className="flex-1 btn btn-outline flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 btn btn-outline flex items-center justify-center gap-2 hover:bg-blue-600 hover:text-white transition-all duration-200"
           >
             <Plus size={16} />
             Add to Cart
@@ -91,7 +96,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="flex-1 btn btn-success flex items-center justify-center gap-2"
           >
             <MessageCircle size={16} />
-            Inquire
+            WhatsApp
           </button>
         </div>
       </div>
