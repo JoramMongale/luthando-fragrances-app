@@ -3,19 +3,10 @@
 import React from 'react'
 import { formatCurrency } from '@/lib/utils'
 import { useCartStore } from '@/lib/cart-store'
-import { openWhatsApp, createProductInquiryMessage } from '@/lib/whatsapp'
+import { openWhatsApp } from '@/lib/whatsapp'
 import { ShoppingCart, MessageCircle, Plus, Package } from 'lucide-react'
 
-interface Product {
-  id: string
-  name: string
-  description: string
-  price: number
-  category: 'For Him' | 'For Her' | 'Unisex'
-  image_url: string | null
-  stock_quantity: number
-  is_active: boolean
-}
+import type { Product } from '@/types'
 
 interface ProductCardProps {
   product: Product
@@ -29,7 +20,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   const handleWhatsAppInquiry = () => {
-    const message = createProductInquiryMessage(product.name, product.price)
+    const message = `Hello, I'm interested in "${product.name}" priced at ${formatCurrency(product.price)}. Could you provide more details?`
     openWhatsApp(message)
   }
 

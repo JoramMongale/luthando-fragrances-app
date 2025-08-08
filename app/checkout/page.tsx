@@ -5,17 +5,17 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCartStore } from '@/lib/cart-store'
 import { formatCurrency } from '@/lib/utils'
-import { openWhatsApp, formatOrderMessage } from '@/lib/whatsapp'
 import { createOrder } from '@/lib/orders'
-import { ArrowLeft, CreditCard, MessageCircle, User, MapPin, Phone, Mail } from 'lucide-react'
-import type { ShippingAddress } from '@/types'
+import { generatePayFastForm, submitPayFastForm } from '@/lib/payments/payfast'
+import { openWhatsApp, formatOrderMessage } from '@/lib/whatsapp'
+import Header from '@/components/Header'
+import { ArrowLeft, CreditCard, MessageCircle, Loader2 } from 'lucide-react'
 
 export default function CheckoutPage() {
-  const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<'payfast' | 'whatsapp'>('payfast')
-  const [shippingDetails, setShippingDetails] = useState<ShippingAddress>({
+  const [shippingDetails, setShippingDetails] = useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -30,21 +30,17 @@ export default function CheckoutPage() {
   const router = useRouter()
 
   useEffect(() => {
-    setMounted(true)
-    
-    // Redirect if not logged in
     if (!user) {
       router.push('/auth/login?redirect=/checkout')
       return
     }
 
-    // Redirect if cart is empty
     if (cartStore.items.length === 0) {
       router.push('/cart')
       return
     }
 
-    // Pre-fill email from user
+    // Pre-fill email
     if (user?.email) {
       setShippingDetails(prev => ({
         ...prev,
@@ -53,19 +49,26 @@ export default function CheckoutPage() {
     }
   }, [user, cartStore.items.length, router])
 
-  const handleInputChange = (field: keyof ShippingAddress, value: string) => {
+  const handleInputChange = (field: string, value: string) => {
     setShippingDetails(prev => ({
       ...prev,
       [field]: value
     }))
   }
 
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     const required = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'postalCode']
-    const missing = required.filter(field => !shippingDetails[field as keyof ShippingAddress])
+    const missing = required.filter(field => !shippingDetails[field as keyof typeof shippingDetails])
     
     if (missing.length > 0) {
       setError(`Please fill in all required fields`)
+      return false
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(shippingDetails.email)) {
+      setError('Please enter a valid email address')
       return false
     }
 
@@ -74,19 +77,64 @@ export default function CheckoutPage() {
 
   const handlePayFastCheckout = async () => {
     if (!validateForm()) return
+
     setLoading(true)
     setError('')
 
     try {
-      // Here you would integrate with PayFast
-      // For now, we'll show a message
-      alert('PayFast integration will be implemented here')
-      // After successful payment, clear cart
-      // cartStore.clearCart()
-      // router.push('/payment/success')
+      // Create order in database
+      const orderData = {
+        user_id: user!.id,
+        items: cartStore.items.map(item => ({
+          product_id: item.product.id,
+          quantity: item.quantity,
+          price: item.product.price
+        })),
+        shipping_address: shippingDetails,
+        customer_notes: ''
+      }
+
+      const { order, error: orderError } = await createOrder(orderData)
+      
+      if (orderError || !order) {
+        const errorMessage =
+          typeof orderError === 'object' && orderError && 'message' in orderError
+            ? (orderError as { message?: string }).message
+            : undefined
+        throw new Error(errorMessage || 'Failed to create order')
+      }
+
+      // Generate PayFast form
+      const paymentConfig = {
+        orderId: order.id,
+        amount: cartStore.getTotalPrice(),
+        customerEmail: shippingDetails.email,
+        customerName: `${shippingDetails.firstName} ${shippingDetails.lastName}`,
+        items: cartStore.items.map(item => ({
+          name: item.product.name,
+          quantity: item.quantity
+        }))
+      }
+
+      const paymentResult = generatePayFastForm(paymentConfig)
+      
+      if (!paymentResult.success) {
+        throw new Error(paymentResult.error || 'Failed to generate payment form')
+      }
+
+      // Clear cart before redirecting
+      cartStore.clearCart()
+
+      // Submit to PayFast
+      const submitResult = submitPayFastForm(paymentResult.formData!, paymentResult.actionUrl!)
+      
+      if (!submitResult.success) {
+        throw new Error(submitResult.error || 'Failed to submit payment')
+      }
+
     } catch (err) {
-      setError('Payment processing failed. Please try again.')
-    } finally {
+      console.error('Checkout error:', err)
+      setError(err instanceof Error ? err.message : 'An error occurred during checkout')
       setLoading(false)
     }
   }
@@ -94,35 +142,30 @@ export default function CheckoutPage() {
   const handleWhatsAppCheckout = () => {
     if (!validateForm()) return
 
-    const items = cartStore.items.map(item => ({
-      name: item.product.name,
-      price: item.product.price * item.quantity,
-      quantity: item.quantity
-    }))
-    
-    const message = formatOrderMessage(items, cartStore.getTotalPrice(), shippingDetails)
-    openWhatsApp(message)
-  }
-
-  if (!mounted || !user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading checkout...</p>
-        </div>
-      </div>
+    const orderMessage = formatOrderMessage(
+      cartStore.items.map(item => ({
+        name: item.product.name,
+        price: item.product.price * item.quantity,
+        quantity: item.quantity
+      })),
+      cartStore.getTotalPrice(),
+      shippingDetails
     )
+
+    openWhatsApp(orderMessage)
+    cartStore.clearCart()
+    router.push('/')
   }
 
-  if (cartStore.items.length === 0) {
-    return null // Will redirect
+  if (!user || cartStore.items.length === 0) {
+    return null
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center mb-8">
           <button 
             onClick={() => router.push('/cart')}
@@ -136,12 +179,9 @@ export default function CheckoutPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Shipping Details Form */}
+          {/* Shipping Details */}
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <User size={20} />
-              Shipping Details
-            </h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Shipping Details</h2>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
@@ -179,7 +219,6 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Mail size={16} className="inline mr-1" />
                   Email Address *
                 </label>
                 <input
@@ -193,7 +232,6 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Phone size={16} className="inline mr-1" />
                   Phone Number *
                 </label>
                 <input
@@ -208,14 +246,12 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <MapPin size={16} className="inline mr-1" />
                   Address *
                 </label>
                 <input
                   type="text"
                   value={shippingDetails.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
-                  placeholder="Street address"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -250,9 +286,8 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order Summary & Payment */}
+          {/* Order Summary */}
           <div className="space-y-6">
-            {/* Order Summary */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
               
@@ -278,7 +313,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Payment Method Selection */}
+            {/* Payment Method */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Payment Method</h2>
               
@@ -316,15 +351,23 @@ export default function CheckoutPage() {
                 </label>
               </div>
 
-              {/* Payment Button */}
               {paymentMethod === 'payfast' ? (
                 <button
                   onClick={handlePayFastCheckout}
                   disabled={loading}
                   className="w-full btn btn-primary py-4 text-lg flex items-center justify-center gap-2"
                 >
-                  <CreditCard size={20} />
-                  {loading ? 'Processing...' : 'Pay Now'}
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin" size={20} />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard size={20} />
+                      Pay Now
+                    </>
+                  )}
                 </button>
               ) : (
                 <button
