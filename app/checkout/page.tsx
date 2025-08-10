@@ -8,7 +8,6 @@ import { formatCurrency } from '@/lib/utils'
 import { createOrder } from '@/lib/orders'
 import { generatePayFastForm, submitPayFastForm } from '@/lib/payments/payfast'
 import { openWhatsApp, formatOrderMessage } from '@/lib/whatsapp'
-import Header from '@/components/Header'
 import { ArrowLeft, CreditCard, MessageCircle, Loader2 } from 'lucide-react'
 
 export default function CheckoutPage() {
@@ -97,11 +96,7 @@ export default function CheckoutPage() {
       const { order, error: orderError } = await createOrder(orderData)
       
       if (orderError || !order) {
-        const errorMessage =
-          typeof orderError === 'object' && orderError && 'message' in orderError
-            ? (orderError as { message?: string }).message
-            : undefined
-        throw new Error(errorMessage || 'Failed to create order')
+        throw new Error(orderError?.message || 'Failed to create order')
       }
 
       // Generate PayFast form
@@ -162,10 +157,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center mb-8">
           <button 
             onClick={() => router.push('/cart')}

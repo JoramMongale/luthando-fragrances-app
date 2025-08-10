@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateOrderStatus } from '@/lib/orders'
-import { verifyPayFastSignature } from '@/lib/payments/payfast'
+import { verifyPayFastSignature, isValidPayFastIP } from '@/lib/payments/payfast'
+import { headers } from 'next/headers'
 
 export async function POST(request: NextRequest) {
   try {
-    // Get the raw body for signature verification
+    // Get IP address for validation
+    const headersList = headers()
+    const forwardedFor = headersList.get('x-forwarded-for')
+    const realIP = headersList.get('x-real-ip')
+    const ip = forwardedFor?.split(',')[0] || realIP || ''
+
+    // Validate IP in production
+    if (process.env.NODE_ENV === 'production' && !isValidPayFastIP(ip)) {
+      console.error('Invalid PayFast IP:', ip)
+      return NextResponse.json({ error: 'Invalid source IP' }, { status: 403 })
+    }
+
+    // Get the raw body
     const body = await request.text()
     const params = new URLSearchParams(body)
     const data: Record<string, string> = {}
@@ -14,12 +27,16 @@ export async function POST(request: NextRequest) {
       data[key] = value
     }
 
-    console.log('PayFast webhook received:', data)
+    console.log('PayFast webhook received:', {
+      payment_status: data.payment_status,
+      order_id: data.m_payment_id,
+      amount: data.amount_gross
+    })
 
     // Verify the signature
     const signature = data.signature
     delete data.signature // Remove signature from data for verification
-
+    
     const passphrase = process.env.PAYFAST_PASSPHRASE
     const isValidSignature = verifyPayFastSignature(data, signature, passphrase)
 
@@ -61,9 +78,7 @@ export async function POST(request: NextRequest) {
 
     console.log(`Order ${orderId} updated to ${orderStatus}`)
 
-    // TODO: Send email notification here if needed
-    // await sendOrderConfirmationEmail(updatedOrder)
-
+    // PayFast expects a 200 OK response
     return NextResponse.json({ success: true })
 
   } catch (error) {
@@ -74,5 +89,5 @@ export async function POST(request: NextRequest) {
 
 // PayFast requires a GET endpoint that returns 200 OK for validation
 export async function GET() {
-  return NextResponse.json({ message: 'PayFast webhook endpoint' })
+  return NextResponse.json({ status: 'PayFast webhook endpoint ready' })
 }

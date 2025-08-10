@@ -1,19 +1,16 @@
 'use client'
 
-import React, { useEffect, useState, Suspense } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCartStore } from '@/lib/cart-store'
 import { getOrderById } from '@/lib/orders'
 import { CheckCircle, Package, ArrowRight } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
-function PaymentSuccessContent() {
+export default function PaymentSuccessPage() {
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const cartStore = useCartStore()
-  
   const orderId = searchParams.get('order_id')
 
   useEffect(() => {
@@ -21,23 +18,22 @@ function PaymentSuccessContent() {
       router.push('/')
       return
     }
-
-    const fetchOrder = async () => {
-      try {
-        const { data, error } = await getOrderById(orderId)
-        if (error) throw error
-        setOrder(data)
-      } catch (error) {
-        console.error('Error fetching order:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchOrder()
-    // Clear cart after successful payment
-    cartStore.clearCart()
-  }, [orderId, router, cartStore])
+  }, [orderId])
+
+  const fetchOrder = async () => {
+    if (!orderId) return
+
+    try {
+      const { data, error } = await getOrderById(orderId)
+      if (error) throw error
+      setOrder(data)
+    } catch (error) {
+      console.error('Error fetching order:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -54,18 +50,15 @@ function PaymentSuccessContent() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-8">
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-          {/* Success Icon */}
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
 
-          {/* Success Message */}
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Payment Successful!</h1>
           <p className="text-lg text-gray-600 mb-8">
             Thank you for your order. Your payment has been processed successfully.
           </p>
 
-          {/* Order Details */}
           {order && (
             <div className="bg-gray-50 rounded-xl p-6 mb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Order Details</h2>
@@ -88,7 +81,6 @@ function PaymentSuccessContent() {
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => router.push('/orders')}
@@ -106,30 +98,15 @@ function PaymentSuccessContent() {
             </button>
           </div>
 
-          {/* What's Next */}
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-bold text-blue-900 mb-2">What happens next?</h3>
-            <p className="text-blue-800 text-sm">
-              You will receive an email confirmation shortly. Your order will be processed and shipped within 2-3 business days.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default function PaymentSuccessPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    }>
-      <PaymentSuccessContent />
-    </Suspense>
-  )
+          <div className
+          "mt-8 p-4 bg-blue-50 rounded-lg">
+           <h3 className="font-bold text-blue-900 mb-2">What happens next?</h3>
+           <p className="text-blue-800 text-sm">
+             You'll receive an email confirmation shortly. Your order will be processed and shipped within 2-3 business days.
+           </p>
+         </div>
+       </div>
+     </div>
+   </div>
+ )
 }
