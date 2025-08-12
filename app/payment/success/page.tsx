@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getOrderById } from '@/lib/orders'
 import { CheckCircle, Package, ArrowRight } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
-export default function PaymentSuccessPage() {
+// Component that uses useSearchParams
+function PaymentSuccessContent() {
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -19,7 +20,7 @@ export default function PaymentSuccessPage() {
       return
     }
     fetchOrder()
-  }, [orderId])
+  }, [orderId, router])
 
   const fetchOrder = async () => {
     if (!orderId) return
@@ -98,13 +99,34 @@ export default function PaymentSuccessPage() {
             </button>
           </div>
           <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-           <h3 className="font-bold text-blue-900 mb-2">What happens next?</h3>
-           <p className="text-blue-800 text-sm">
-             You'll receive an email confirmation shortly. Your order will be processed and shipped within 2-5 business days.
-           </p>
-         </div>
-       </div>
-     </div>
-   </div>
- )
+            <h3 className="font-bold text-blue-900 mb-2">What happens next?</h3>
+            <p className="text-blue-800 text-sm">
+              You'll receive an email confirmation shortly. Your order will be processed and shipped within 2-5 business days.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Loading component for Suspense fallback
+function PaymentSuccessLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading payment confirmation...</p>
+      </div>
+    </div>
+  )
+}
+
+// Main component with Suspense wrapper
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<PaymentSuccessLoading />}>
+      <PaymentSuccessContent />
+    </Suspense>
+  )
 }
