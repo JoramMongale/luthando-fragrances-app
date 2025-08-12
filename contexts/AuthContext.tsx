@@ -46,19 +46,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (session?.user) {
           setUser(session.user)
           
-          // Create/update user profile
-          const { error } = await supabase
-            .from('user_profiles')
-            .upsert({
-              id: session.user.id,
-              email: session.user.email,
-              updated_at: new Date().toISOString()
-            }, {
-              onConflict: 'id'
-            })
-            
-          if (error) {
-            console.error('Error creating user profile:', error)
+          // Create/update user profile with comprehensive error handling
+          try {
+            const { error } = await supabase
+              .from('user_profiles')
+              .upsert({
+                id: session.user.id,
+                email: session.user.email,
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'id'
+              })
+              
+            if (error) {
+              console.error('Supabase error creating user profile:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+              })
+            } else {
+              console.log('User profile created/updated successfully for:', session.user.email)
+            }
+          } catch (error) {
+            console.error('Unexpected error creating user profile:', error)
+            // Log the actual error object structure
+            if (error && typeof error === 'object') {
+              console.error('Error object keys:', Object.keys(error))
+              console.error('Error stringified:', JSON.stringify(error, null, 2))
+            }
           }
         } else {
           setUser(null)
@@ -83,7 +99,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkUser = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        console.error('Error getting session:', error)
+      }
+      
       setUser(session?.user ?? null)
     } catch (error) {
       console.error('Error checking user session:', error)
@@ -96,12 +117,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true)
       
-      // First, check if user already exists
-      const { data: existingUser } = await supabase
+      // First, check if user already exists (with better error handling)
+      const { data: existingUser, error: checkError } = await supabase
         .from('user_profiles')
         .select('email')
         .eq('email', email)
-        .single()
+        .maybeSingle() // Use maybeSingle instead of single
+      
+      // Handle check errors more gracefully
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing user:', checkError)
+        // Don't fail signup for check errors, just log them
+      }
       
       if (existingUser) {
         return {
@@ -130,15 +157,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('User created successfully:', data.user.email)
         
         // The trigger should create the profile automatically
-        // but we'll ensure it exists
-        await supabase
-          .from('user_profiles')
-          .upsert({
-            id: data.user.id,
-            email: data.user.email
-          }, {
-            onConflict: 'id'
-          })
+        // but we'll ensure it exists with better error handling
+        try {
+          const { error: profileError } = await supabase
+            .from('user_profiles')
+            .upsert({
+              id: data.user.id,
+              email: data.user.email,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'id'
+            })
+          
+          if (profileError) {
+            console.error('Error creating profile during signup:', {
+              message: profileError.message,
+              details: profileError.details,
+              code: profileError.code
+            })
+            // Don't fail the signup for profile creation issues
+          } else {
+            console.log('Profile created successfully during signup')
+          }
+        } catch (profileError) {
+          console.error('Unexpected error creating profile during signup:', profileError)
+        }
       }
 
       return { data, error: null }

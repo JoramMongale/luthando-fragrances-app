@@ -127,19 +127,26 @@ export default function AdminProducts() {
     setShowForm(true)
   }
 
-  const handleDelete = async (productId: string) => {
-    if (!confirm('Are you sure you want to deactivate this product?')) return
+const handleDelete = async (productId: string) => {
+  if (!confirm('Are you sure you want to deactivate this product?')) return
 
-    try {
-      const { error } = await deleteProduct(productId)
-      if (error) throw error
-      await fetchProducts()
-    } catch (err: any) {
-      console.error('Error deleting product:', err)
-      setError(err.message || 'Failed to delete product')
+  try {
+    const { error } = await deleteProduct(productId)
+    if (error) {
+      // Handle both error object formats
+      const errorMessage = typeof error === 'object' && error.message 
+        ? error.message 
+        : 'Failed to deactivate product'
+      throw new Error(errorMessage)
     }
+    await fetchProducts()
+  } catch (err: any) {
+    console.error('Error deleting product:', err)
+    // More defensive error message extraction
+    const errorMessage = err?.message || err?.error?.message || 'Failed to deactivate product'
+    setError(errorMessage)
   }
-
+}
   const handleImageUpdate = (imageUrl: string | null, fileName: string | null) => {
     setFormData(prev => ({
       ...prev,

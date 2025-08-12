@@ -32,7 +32,14 @@ export const getAllProducts = async (page = 1, limit = 20, category?: string, se
 
     const { data, error, count } = await query.range(from, to)
 
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error fetching products:', {
+        message: error.message,
+        details: error.details,
+        code: error.code
+      })
+      throw new Error(error.message || 'Failed to fetch products')
+    }
 
     return {
       data: data as Product[],
@@ -42,7 +49,16 @@ export const getAllProducts = async (page = 1, limit = 20, category?: string, se
     }
   } catch (error) {
     console.error('Error fetching products:', error)
-    return { data: null, error, totalCount: 0, totalPages: 0 }
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'An unexpected error occurred while fetching products'
+    
+    return { 
+      data: null, 
+      error: { message: errorMessage }, 
+      totalCount: 0, 
+      totalPages: 0 
+    }
   }
 }
 
@@ -54,11 +70,26 @@ export const createProduct = async (productData: ProductFormData) => {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error creating product:', {
+        message: error.message,
+        details: error.details,
+        code: error.code
+      })
+      throw new Error(error.message || 'Failed to create product')
+    }
+
     return { data, error: null }
   } catch (error) {
     console.error('Error creating product:', error)
-    return { data: null, error }
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'An unexpected error occurred while creating the product'
+    
+    return { 
+      data: null, 
+      error: { message: errorMessage }
+    }
   }
 }
 
@@ -74,11 +105,26 @@ export const updateProduct = async (id: string, productData: Partial<ProductForm
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error updating product:', {
+        message: error.message,
+        details: error.details,
+        code: error.code
+      })
+      throw new Error(error.message || 'Failed to update product')
+    }
+
     return { data, error: null }
   } catch (error) {
     console.error('Error updating product:', error)
-    return { data: null, error }
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'An unexpected error occurred while updating the product'
+    
+    return { 
+      data: null, 
+      error: { message: errorMessage }
+    }
   }
 }
 
@@ -87,16 +133,72 @@ export const deleteProduct = async (id: string) => {
     // Soft delete by setting is_active to false
     const { data, error } = await supabase
       .from('products')
-      .update({ is_active: false })
+      .update({ 
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', id)
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error deleting product:', {
+        message: error.message,
+        details: error.details,
+        code: error.code,
+        hint: error.hint
+      })
+      throw new Error(error.message || `Failed to deactivate product: ${error.code || 'Unknown error'}`)
+    }
+
     return { data, error: null }
   } catch (error) {
     console.error('Error deleting product:', error)
-    return { data: null, error }
+    
+    // Ensure we return a proper error object with a message
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : typeof error === 'string' 
+        ? error 
+        : 'An unknown error occurred while deactivating the product'
+    
+    return { 
+      data: null, 
+      error: { message: errorMessage }
+    }
+  }
+}
+
+// Alternative hard delete function if needed
+export const hardDeleteProduct = async (id: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Supabase error hard deleting product:', {
+        message: error.message,
+        details: error.details,
+        code: error.code
+      })
+      throw new Error(error.message || 'Failed to delete product')
+    }
+
+    return { data, error: null }
+  } catch (error) {
+    console.error('Error hard deleting product:', error)
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'An unexpected error occurred while deleting the product'
+    
+    return { 
+      data: null, 
+      error: { message: errorMessage }
+    }
   }
 }
 
@@ -107,7 +209,10 @@ export const getOrderStats = async () => {
       .from('orders')
       .select('*')
 
-    if (ordersError) throw ordersError
+    if (ordersError) {
+      console.error('Error fetching orders for stats:', ordersError)
+      throw new Error(ordersError.message || 'Failed to fetch order statistics')
+    }
 
     const totalOrders = orders?.length || 0
     const totalRevenue = orders?.reduce((sum, order) => sum + Number(order.total_amount), 0) || 0
@@ -123,12 +228,16 @@ export const getOrderStats = async () => {
     }
   } catch (error) {
     console.error('Error fetching order stats:', error)
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Failed to fetch order statistics'
+    
     return {
       totalOrders: 0,
       totalRevenue: 0,
       pendingOrders: 0,
       completedOrders: 0,
-      error
+      error: { message: errorMessage }
     }
   }
 }
@@ -148,10 +257,21 @@ export const getRecentOrders = async (limit = 10) => {
       .order('created_at', { ascending: false })
       .limit(limit)
 
-    if (error) throw error
+    if (error) {
+      console.error('Error fetching recent orders:', error)
+      throw new Error(error.message || 'Failed to fetch recent orders')
+    }
+
     return { data, error: null }
   } catch (error) {
     console.error('Error fetching recent orders:', error)
-    return { data: null, error }
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Failed to fetch recent orders'
+    
+    return { 
+      data: null, 
+      error: { message: errorMessage }
+    }
   }
 }
