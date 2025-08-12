@@ -97,12 +97,10 @@ export default function PaymentSuccessPage() {
               <ArrowRight size={16} />
             </button>
           </div>
-
-          <div className
-          "mt-8 p-4 bg-blue-50 rounded-lg">
+          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
            <h3 className="font-bold text-blue-900 mb-2">What happens next?</h3>
            <p className="text-blue-800 text-sm">
-             You'll receive an email confirmation shortly. Your order will be processed and shipped within 2-3 business days.
+             You'll receive an email confirmation shortly. Your order will be processed and shipped within 2-5 business days.
            </p>
          </div>
        </div>
