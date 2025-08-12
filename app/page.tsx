@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="gradient-hero text-white py-20 lg:py-32">
+      <section className="py-20 bg-gradient-to-r from-blue-50 to-purple-500 text-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
             Discover Your
@@ -77,7 +77,7 @@ export default function Home() {
                 <Truck className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold mb-3 text-gray-900">Fast Delivery</h3>
-              <p className="text-gray-600 leading-relaxed">Quick and secure delivery across South Africa within 2-3 business days</p>
+              <p className="text-gray-600 leading-relaxed">Quick and secure delivery across South Africa within 2-5 business days</p>
             </div>
             
             <div className="text-center group">
