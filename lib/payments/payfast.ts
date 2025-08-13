@@ -32,8 +32,8 @@ export const generatePayFastForm = (orderData: PayFastConfig) => {
   try {
     const merchantId = process.env.NEXT_PUBLIC_PAYFAST_MERCHANT_ID
     const merchantKey = process.env.NEXT_PUBLIC_PAYFAST_MERCHANT_KEY
-    const sandbox = process.env.NEXT_PUBLIC_PAYFAST_SANDBOX === 'true'
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const sandbox = process.env.NEXT_PUBLIC_PAYFAST_SANDBOX === 'false'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://luthando-fragrances-7xob8z0xg-jorams-projects-1705f30c.vercel.app/'
 
     if (!merchantId || !merchantKey) {
       throw new Error('PayFast credentials not configured')
@@ -56,7 +56,7 @@ export const generatePayFastForm = (orderData: PayFastConfig) => {
     }
 
     // Generate signature
-    const signature = generateSignature(payFastData)
+    const signature = generateSignature(payFastData,process.env.PAYFAST_PASSPHRASE )
     
     const actionUrl = sandbox 
       ? 'https://sandbox.payfast.co.za/eng/process'
