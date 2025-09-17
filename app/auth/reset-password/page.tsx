@@ -52,24 +52,19 @@ export default function ResetPasswordPage() {
     setLoading(true)
     
     try {
-      const { error } = await updatePassword(password)
-      
-      if (error) {
-        setError(error.message)
-        setLoading(false)
-      } else {
-        setSuccess(true)
-        // Don't set loading to false here since we're changing the view
-        // The setTimeout will handle the redirect
-        setTimeout(() => {
-          router.push('/auth/login')
-        }, 3000)
-      }
-    } catch (err: any) {
-      console.error('Password update error:', err)
-      setError('An unexpected error occurred. Please try again.')
-      setLoading(false)
-    }
+  const { error } = await updatePassword(password)
+  if (error) {
+    setError(error.message)
+  } else {
+    setSuccess(true)
+    setTimeout(() => router.push('/auth/login'), 3000)
+    return  // exit early, don’t hit setLoading(false)
+  }
+} catch (err: any) {
+  setError('An unexpected error occurred')
+} finally {
+  if (!success) setLoading(false)  // only stop loading if not successful
+}
   }
 
   if (success) {
