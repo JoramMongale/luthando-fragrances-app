@@ -1,5 +1,6 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { Lock, Eye, EyeOff } from 'lucide-react'
@@ -8,67 +9,39 @@ export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   
-  const { updatePassword, user } = useAuth()
+  const { updatePassword, loading } = useAuth() // Use global loading state
   const router = useRouter()
-
-  // Check if user is in password recovery mode
-  useEffect(() => {
-    // If there's no user session and no recovery session, redirect to login
-    if (!user) {
-      // Give it a moment to check for recovery session
-      const timer = setTimeout(() => {
-        const urlParams = new URLSearchParams(window.location.search)
-        const error = urlParams.get('error')
-        const errorDescription = urlParams.get('error_description')
-        
-        if (error) {
-          setError(errorDescription || 'Invalid or expired reset link')
-        }
-      }, 1000)
-      
-      return () => clearTimeout(timer)
-    }
-  }, [user])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     // Validation
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
     }
-    
+
     if (password.length < 6) {
       setError('Password must be at least 6 characters long')
       return
     }
-    
-    setLoading(true)
-    
+
     try {
       const { error } = await updatePassword(password)
-      
       if (error) {
         setError(error.message)
-        setLoading(false)
       } else {
         setSuccess(true)
-        // Don't set loading to false here since we're changing the view
-        // The setTimeout will handle the redirect
         setTimeout(() => {
           router.push('/auth/login')
         }, 3000)
       }
     } catch (err: any) {
-      console.error('Password update error:', err)
-      setError('An unexpected error occurred. Please try again.')
-      setLoading(false)
+      setError('An unexpected error occurred')
     }
   }
 
@@ -126,13 +99,11 @@ export default function ResetPasswordPage() {
                   className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter new password"
                   required
-                  disabled={loading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  disabled={loading}
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
@@ -159,14 +130,13 @@ export default function ResetPasswordPage() {
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Confirm new password"
                   required
-                  disabled={loading}
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              disabled={loading || !password || !confirmPassword}
+              disabled={loading}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Resetting...' : 'Reset Password'}

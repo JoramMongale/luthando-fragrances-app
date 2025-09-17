@@ -1,4 +1,5 @@
 'use client'
+
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
@@ -114,6 +115,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string) => {
     try {
+      setLoading(true)
+      
       // First, check if user already exists (with better error handling)
       const { data: existingUser, error: checkError } = await supabase
         .from('user_profiles')
@@ -189,11 +192,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: null,
         error: { message: 'An unexpected error occurred during signup' } as AuthError
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   const signIn = async (email: string, password: string) => {
     try {
+      setLoading(true)
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -226,11 +233,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: null,
         error: { message: 'An unexpected error occurred during sign in' } as AuthError
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   const signOut = async () => {
     try {
+      setLoading(true)
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Sign out error:', error)
@@ -239,11 +249,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Unexpected sign out error:', error)
       return { error: error as AuthError }
+    } finally {
+      setLoading(false)
     }
   }
 
   const resetPassword = async (email: string) => {
     try {
+      setLoading(true)
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       })
@@ -260,30 +273,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: null,
         error: { message: 'An unexpected error occurred' } as AuthError
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   const updatePassword = async (newPassword: string) => {
     try {
-      // First check if we have a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
-      if (sessionError) {
-        console.error('Session error during password update:', sessionError)
-        return {
-          data: null,
-          error: { message: 'Session error. Please try again.' } as AuthError
-        }
-      }
-
-      if (!session) {
-        console.error('No active session for password update')
-        return {
-          data: null,
-          error: { message: 'Invalid or expired password reset link. Please request a new one.' } as AuthError
-        }
-      }
-
+      setLoading(true)
       const { data, error } = await supabase.auth.updateUser({
         password: newPassword
       })
@@ -293,7 +290,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { data: null, error }
       }
 
-      console.log('Password updated successfully')
       return { data, error: null }
     } catch (error) {
       console.error('Unexpected password update error:', error)
@@ -301,6 +297,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: null,
         error: { message: 'An unexpected error occurred' } as AuthError
       }
+    } finally {
+      setLoading(false)
     }
   }
 
