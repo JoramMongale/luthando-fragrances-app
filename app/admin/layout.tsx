@@ -123,7 +123,7 @@ export default function AdminLayout({
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mr-3">
-              <span className="text-white font-bold">K</span>
+               <span className="text-white font-bold">L</span>
             </div>
             <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
           </div>

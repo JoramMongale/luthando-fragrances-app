@@ -157,27 +157,30 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-luxury-porcelain py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center mb-8">
-          <button 
+           <button 
             onClick={() => router.push('/cart')}
-            className="btn btn-secondary flex items-center gap-2"
+            className="group relative inline-flex items-center gap-2 font-sans-luxury tracking-widest text-luxury-obsidian text-sm py-2 px-4 border border-luxury-obsidian/30 overflow-hidden transition-all duration-300 hover:text-luxury-porcelain"
           >
-            <ArrowLeft size={16} />
-            Back to Cart
+            <span className="relative z-10 flex items-center gap-2">
+              <ArrowLeft size={16} />
+              Back to Cart
+            </span>
+            <div className="absolute inset-0 bg-luxury-obsidian transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
           </button>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+         <h1 className="font-serif-luxury text-4xl tracking-widest text-luxury-obsidian mb-12">Checkout</h1>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Shipping Details */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Shipping Details</h2>
+           {/* Shipping Details */}
+           <div className="bg-luxury-porcelain border border-luxury-obsidian/10 p-8">
+             <h2 className="font-serif-luxury text-2xl tracking-widest text-luxury-obsidian mb-8">Shipping Details</h2>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+               <div className="bg-luxury-vanilla-veil border border-luxury-obsidian/20 text-luxury-obsidian px-4 py-3 mb-6">
                 {error}
               </div>
             )}
@@ -185,46 +188,46 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                     First Name *
                   </label>
                   <input
                     type="text"
                     value={shippingDetails.firstName}
                     onChange={(e) => handleInputChange('firstName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                     Last Name *
                   </label>
                   <input
                     type="text"
                     value={shippingDetails.lastName}
                     onChange={(e) => handleInputChange('lastName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                   Email Address *
                 </label>
                 <input
                   type="email"
                   value={shippingDetails.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                   Phone Number *
                 </label>
                 <input
@@ -232,46 +235,46 @@ export default function CheckoutPage() {
                   value={shippingDetails.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   placeholder="+27 12 345 6789"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                   Address *
                 </label>
                 <input
                   type="text"
                   value={shippingDetails.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                     City *
                   </label>
                   <input
                     type="text"
                     value={shippingDetails.city}
                     onChange={(e) => handleInputChange('city', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-sans-luxury text-luxury-obsidian/70 mb-2">
                     Postal Code *
                   </label>
                   <input
                     type="text"
                     value={shippingDetails.postalCode}
                     onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-luxury-obsidian/20 focus:outline-none focus:ring-2 focus:ring-luxury-obsidian"
                     required
                   />
                 </div>
@@ -279,27 +282,27 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order Summary */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+           {/* Order Summary */}
+           <div className="space-y-6">
+             <div className="bg-luxury-porcelain border border-luxury-obsidian/10 p-8">
+               <h2 className="font-serif-luxury text-2xl tracking-widest text-luxury-obsidian mb-8">Order Summary</h2>
               
               <div className="space-y-4">
                 {cartStore.items.map((item) => (
-                  <div key={item.product.id} className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <div key={item.product.id} className="flex justify-between items-center py-3 border-b border-luxury-obsidian/10">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                      <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                      <h3 className="font-sans-luxury text-luxury-obsidian">{item.product.name}</h3>
+                      <p className="text-sm text-luxury-obsidian/70">Quantity: {item.quantity}</p>
                     </div>
-                    <span className="font-semibold text-gray-900">
+                    <span className="font-semibold text-luxury-obsidian">
                       {formatCurrency(item.product.price * item.quantity)}
                     </span>
                   </div>
                 ))}
                 
-                <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-                  <span className="text-xl font-bold text-gray-900">Total:</span>
-                  <span className="text-2xl font-bold text-blue-600">
+                <div className="flex justify-between items-center pt-4 border-t border-luxury-obsidian/10">
+                  <span className="text-xl font-bold text-luxury-obsidian">Total:</span>
+                  <span className="text-2xl font-bold text-luxury-obsidian">
                     {formatCurrency(cartStore.getTotalPrice())}
                   </span>
                 </div>
@@ -307,11 +310,11 @@ export default function CheckoutPage() {
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Payment Method</h2>
+            <div className="bg-luxury-porcelain border border-luxury-obsidian/10 p-8">
+               <h2 className="font-serif-luxury text-2xl tracking-widest text-luxury-obsidian mb-8">Payment Method</h2>
               
               <div className="space-y-3 mb-6">
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <label className="flex items-center p-4 border border-luxury-obsidian/20 cursor-pointer hover:bg-luxury-vanilla-veil">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -320,14 +323,14 @@ export default function CheckoutPage() {
                     onChange={(e) => setPaymentMethod(e.target.value as 'payfast')}
                     className="mr-3"
                   />
-                  <CreditCard className="mr-3 text-gray-600" size={20} />
+                  <CreditCard className="mr-3 text-luxury-obsidian/70" size={20} />
                   <div>
-                    <div className="font-medium">Online Payment (PayFast)</div>
-                    <div className="text-sm text-gray-600">Credit card, EFT, SnapScan</div>
+                    <div className="font-sans-luxury">Online Payment (PayFast)</div>
+                    <div className="text-sm text-luxury-obsidian/70">Credit card, EFT, SnapScan</div>
                   </div>
                 </label>
 
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <label className="flex items-center p-4 border border-luxury-obsidian/20 cursor-pointer hover:bg-luxury-vanilla-veil">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -336,19 +339,19 @@ export default function CheckoutPage() {
                     onChange={(e) => setPaymentMethod(e.target.value as 'whatsapp')}
                     className="mr-3"
                   />
-                  <MessageCircle className="mr-3 text-green-600" size={20} />
+                  <MessageCircle className="mr-3 text-luxury-obsidian/70" size={20} />
                   <div>
-                    <div className="font-medium">WhatsApp Order</div>
-                    <div className="text-sm text-gray-600">Complete order via WhatsApp</div>
+                    <div className="font-sans-luxury">WhatsApp Order</div>
+                    <div className="text-sm text-luxury-obsidian/70">Complete order via WhatsApp</div>
                   </div>
                 </label>
               </div>
 
               {paymentMethod === 'payfast' ? (
-                <button
+                 <button
                   onClick={handlePayFastCheckout}
                   disabled={loading}
-                  className="w-full btn btn-primary py-4 text-lg flex items-center justify-center gap-2"
+                  className="group/payfast w-full font-sans-luxury tracking-widest text-lg py-4 flex items-center justify-center gap-3 bg-luxury-obsidian text-luxury-porcelain border border-luxury-obsidian overflow-hidden transition-all duration-300 hover:text-luxury-obsidian disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
@@ -358,21 +361,23 @@ export default function CheckoutPage() {
                   ) : (
                     <>
                       <CreditCard size={20} />
-                      Pay Now
+                      <span className="relative z-10">Pay Now</span>
+                      <div className="absolute inset-0 bg-luxury-porcelain transform -translate-x-full group-hover/payfast:translate-x-0 transition-transform duration-300"></div>
                     </>
                   )}
                 </button>
               ) : (
-                <button
+                 <button
                   onClick={handleWhatsAppCheckout}
-                  className="w-full btn btn-success py-4 text-lg flex items-center justify-center gap-2"
+                  className="group/whatsapp w-full font-sans-luxury tracking-widest text-lg py-4 flex items-center justify-center gap-3 text-luxury-obsidian border border-luxury-obsidian overflow-hidden transition-all duration-300 hover:text-luxury-porcelain"
                 >
                   <MessageCircle size={20} />
-                  Complete via WhatsApp
+                  <span className="relative z-10">Complete via WhatsApp</span>
+                  <div className="absolute inset-0 bg-luxury-obsidian transform -translate-x-full group-hover/whatsapp:translate-x-0 transition-transform duration-300"></div>
                 </button>
               )}
 
-              <p className="text-center text-gray-600 mt-4 text-sm">
+              <p className="text-center text-luxury-obsidian/70 mt-4 text-sm">
                 Your order will be processed securely
               </p>
             </div>

@@ -34,21 +34,25 @@ export default function ForgotPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center py-12 px-4">
+      <div className="min-h-screen bg-luxury-porcelain flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-8 h-8 text-green-600" />
+          <div className="bg-luxury-porcelain border border-luxury-sand p-12 text-center">
+            <div className="w-20 h-20 rounded-full border border-luxury-obsidian flex items-center justify-center mx-auto mb-8">
+              <Mail className="w-10 h-10 text-luxury-obsidian" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Check Your Email</h1>
-            <p className="text-gray-600 mb-6">
-              We've sent a password reset link to <strong>{email}</strong>
+            <h1 className="font-serif-luxury text-3xl tracking-widest text-luxury-obsidian mb-6">CHECK YOUR EMAIL</h1>
+            <div className="h-px w-16 bg-luxury-sand mx-auto mb-8"></div>
+            <p className="font-sans-luxury tracking-wide text-luxury-obsidian/70 mb-6">
+              We've sent a password reset link to <strong className="font-medium text-luxury-obsidian">{email}</strong>
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="font-sans-luxury tracking-wide text-sm text-luxury-obsidian/50 mb-10">
               Click the link in the email to reset your password. If you don't see it, check your spam folder.
             </p>
-            <Link href="/auth/login" className="btn btn-primary w-full">
-              Back to Login
+            <Link 
+              href="/auth/login" 
+              className="inline-block font-sans-luxury tracking-widest text-luxury-obsidian py-3 px-8 border border-luxury-obsidian hover:bg-luxury-obsidian hover:text-luxury-porcelain transition-all duration-300"
+            >
+              BACK TO LOGIN
             </Link>
           </div>
         </div>
@@ -57,56 +61,74 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-luxury-porcelain flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">K</span>
+        {/* Luxury Card */}
+        <div className="bg-luxury-porcelain border border-luxury-sand p-10">
+          {/* Logo Header */}
+          <div className="text-center mb-12">
+            <div className="w-20 h-20 rounded-full border border-luxury-obsidian flex items-center justify-center mx-auto mb-6">
+              <span className="font-serif-luxury font-bold text-3xl text-luxury-obsidian">L</span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
-            <p className="text-gray-600">Enter your email to reset your password</p>
+            <h1 className="font-serif-luxury text-4xl tracking-widest text-luxury-obsidian mb-4">
+              FORGOT PASSWORD?
+            </h1>
+            <div className="h-px w-16 bg-luxury-sand mx-auto mb-6"></div>
+            <p className="font-sans-luxury tracking-wide text-luxury-obsidian/70">
+              Enter your email to reset your password
+            </p>
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-              {error}
+            <div className="border border-luxury-obsidian/20 bg-luxury-vanilla-veil px-6 py-4 mb-8">
+              <p className="font-sans-luxury tracking-wide text-luxury-obsidian">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+              <label className="block font-sans-luxury tracking-widest text-sm text-luxury-obsidian mb-3">
+                EMAIL ADDRESS
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-luxury-obsidian/50" />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your email"
+                  className="block w-full pl-12 pr-4 py-4 border border-luxury-obsidian/30 bg-transparent font-sans-luxury tracking-wide text-luxury-obsidian placeholder:text-luxury-obsidian/30 focus:outline-none focus:border-luxury-obsidian transition-all duration-300"
+                  placeholder="ENTER YOUR EMAIL"
                   required
                 />
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="group relative w-full font-sans-luxury tracking-widest text-luxury-obsidian py-4 border border-luxury-obsidian overflow-hidden transition-all duration-500 hover:text-luxury-porcelain disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Sending...' : 'Send Reset Link'}
+              <span className="relative z-10">
+                {loading ? 'SENDING...' : 'SEND RESET LINK'}
+              </span>
+              <div className="absolute inset-0 bg-luxury-obsidian transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-medium flex items-center justify-center gap-2">
+          {/* Back to Login */}
+          <div className="mt-10 pt-8 border-t border-luxury-sand text-center">
+            <Link 
+              href="/auth/login" 
+              className="font-sans-luxury tracking-widest text-sm text-luxury-obsidian hover:text-luxury-obsidian/70 transition-colors inline-flex items-center gap-2"
+            >
               <ArrowLeft size={16} />
-              Back to login
+              BACK TO LOGIN
             </Link>
           </div>
         </div>

@@ -39,10 +39,10 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-luxury-porcelain flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading cart...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-luxury-obsidian mx-auto mb-4"></div>
+          <p className="font-sans-luxury tracking-wide text-luxury-obsidian/70">Loading cart...</p>
         </div>
       </div>
     )
@@ -50,18 +50,21 @@ export default function CartPage() {
 
   if (cartStore.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-luxury-porcelain py-8">
         <div className="max-w-2xl mx-auto px-4">
-          <div className="text-center py-16">
-            <ShoppingCart className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Cart is Empty</h1>
-            <p className="text-gray-600 mb-8 text-lg">Discover our amazing fragrances and add them to your cart</p>
+          <div className="text-center py-24">
+            <ShoppingCart className="w-32 h-32 text-luxury-vanilla-veil mx-auto mb-8" />
+            <h1 className="font-serif-luxury text-4xl tracking-widest text-luxury-obsidian mb-6">Your Cart is Empty</h1>
+            <p className="font-sans-luxury tracking-wide text-luxury-obsidian/70 mb-10 text-lg">Discover our amazing fragrances and add them to your cart</p>
             <Link 
               href="/"
-              className="btn btn-primary inline-flex items-center gap-2"
+              className="group relative inline-flex items-center gap-3 font-sans-luxury tracking-widest text-luxury-obsidian text-lg py-3 px-8 border border-luxury-obsidian overflow-hidden transition-all duration-300 hover:text-luxury-porcelain"
             >
-              <ArrowLeft size={16} />
-              Continue Shopping
+              <span className="relative z-10 flex items-center gap-2">
+                <ArrowLeft size={18} />
+                Continue Shopping
+              </span>
+              <div className="absolute inset-0 bg-luxury-obsidian transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
             </Link>
           </div>
         </div>
@@ -70,59 +73,62 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-luxury-porcelain py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center mb-8">
-          <Link href="/" className="btn btn-secondary flex items-center gap-2">
-            <ArrowLeft size={16} />
-            Back to Shop
+          <Link href="/" className="group relative inline-flex items-center gap-2 font-sans-luxury tracking-widest text-luxury-obsidian text-sm py-2 px-4 border border-luxury-obsidian/30 overflow-hidden transition-all duration-300 hover:text-luxury-porcelain">
+            <span className="relative z-10 flex items-center gap-2">
+              <ArrowLeft size={16} />
+              Back to Shop
+            </span>
+            <div className="absolute inset-0 bg-luxury-obsidian transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
           </Link>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+        <h1 className="font-serif-luxury text-4xl tracking-widest text-luxury-obsidian mb-12">Shopping Cart</h1>
 
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-luxury-porcelain border border-luxury-obsidian/10 overflow-hidden">
           {cartStore.items.map((item, index) => (
-            <div key={item.product.id} className={`p-6 ${index < cartStore.items.length - 1 ? 'border-b border-gray-200' : ''}`}>
+             <div key={item.product.id} className={`p-8 ${index < cartStore.items.length - 1 ? 'border-b border-luxury-obsidian/10' : ''}`}>
               <div className="flex items-start gap-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center flex-shrink-0">
+                 <div className="w-24 h-24 bg-luxury-vanilla-veil flex items-center justify-center flex-shrink-0">
                   {item.product.image_url ? (
                     <img
                       src={item.product.image_url}
                       alt={item.product.name}
-                      className="w-full h-full object-cover rounded-lg"
+                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-gray-500 text-sm">No Image</span>
+                     <span className="font-sans-luxury tracking-widest text-xs text-luxury-obsidian/30">NO IMAGE</span>
                   )}
                 </div>
                 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{item.product.name}</h3>
-                  <p className="text-gray-600 mb-3">{item.product.description || 'Premium fragrance'}</p>
-                  <p className="text-lg font-semibold text-blue-600">{formatCurrency(item.product.price)}</p>
+                   <h3 className="font-serif-luxury text-2xl tracking-widest text-luxury-obsidian mb-3">{item.product.name}</h3>
+                   <p className="font-sans-luxury tracking-wide text-luxury-obsidian/70 mb-4 leading-relaxed">{item.product.description || 'Premium fragrance'}</p>
+                   <p className="font-serif-luxury text-2xl tracking-widest text-luxury-obsidian">{formatCurrency(item.product.price)}</p>
                 </div>
                 
                 <div className="flex items-center gap-4 flex-shrink-0">
-                  <div className="flex items-center gap-3 bg-gray-100 rounded-lg p-1">
-                    <button
+                   <div className="flex items-center gap-3 bg-luxury-vanilla-veil p-1">
+                     <button
                       onClick={() => cartStore.updateQuantity(item.product.id, item.quantity - 1)}
-                      className="w-8 h-8 rounded-md bg-white flex items-center justify-center hover:bg-gray-200 transition-colors"
+                      className="w-8 h-8 bg-luxury-porcelain flex items-center justify-center hover:bg-luxury-obsidian/10 transition-colors"
                     >
-                      <Minus size={14} />
+                      <Minus size={14} className="text-luxury-obsidian" />
                     </button>
-                    <span className="w-8 text-center font-medium">{item.quantity}</span>
-                    <button
+                     <span className="w-8 text-center font-serif-luxury text-luxury-obsidian">{item.quantity}</span>
+                     <button
                       onClick={() => cartStore.updateQuantity(item.product.id, item.quantity + 1)}
-                      className="w-8 h-8 rounded-md bg-white flex items-center justify-center hover:bg-gray-200 transition-colors"
+                      className="w-8 h-8 bg-luxury-porcelain flex items-center justify-center hover:bg-luxury-obsidian/10 transition-colors"
                     >
-                      <Plus size={14} />
+                      <Plus size={14} className="text-luxury-obsidian" />
                     </button>
                   </div>
                   
-                  <button
+                   <button
                     onClick={() => cartStore.removeItem(item.product.id)}
-                    className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                    className="text-luxury-obsidian/50 hover:text-luxury-obsidian p-2 hover:bg-luxury-vanilla-veil transition-colors"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -131,33 +137,37 @@ export default function CartPage() {
             </div>
           ))}
           
-          <div className="p-6 bg-gray-50">
+           <div className="p-8 bg-luxury-vanilla-veil">
             <div className="flex justify-between items-center mb-6">
-              <span className="text-xl font-semibold text-gray-900">Total:</span>
-              <span className="text-3xl font-bold text-blue-600">
-                {formatCurrency(cartStore.getTotalPrice())}
-              </span>
+               <span className="font-serif-luxury text-2xl tracking-widest text-luxury-obsidian">Total:</span>
+               <span className="font-serif-luxury text-4xl tracking-widest text-luxury-obsidian">
+                 {formatCurrency(cartStore.getTotalPrice())}
+               </span>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
+               <button
                 onClick={handleCheckout}
-                className="flex-1 btn btn-primary text-lg py-4 flex items-center justify-center gap-2"
+                className="group/checkout flex-1 font-sans-luxury tracking-widest text-lg py-4 flex items-center justify-center gap-3 bg-luxury-obsidian text-luxury-porcelain border border-luxury-obsidian overflow-hidden transition-all duration-300 hover:text-luxury-obsidian"
               >
-                <CreditCard size={20} />
-                Proceed to Checkout
+                <span className="relative z-10 flex items-center gap-3">
+                  <CreditCard size={20} />
+                  Proceed to Checkout
+                </span>
+                <div className="absolute inset-0 bg-luxury-porcelain transform -translate-x-full group-hover/checkout:translate-x-0 transition-transform duration-300"></div>
               </button>
-              <button
+               <button
                 onClick={handleWhatsAppOrder}
-                className="flex-1 btn btn-success text-lg py-4"
+                className="group/whatsapp flex-1 font-sans-luxury tracking-widest text-lg py-4 flex items-center justify-center gap-3 text-luxury-obsidian border border-luxury-obsidian overflow-hidden transition-all duration-300 hover:text-luxury-porcelain"
               >
-                Order via WhatsApp
+                <span className="relative z-10">Order via WhatsApp</span>
+                <div className="absolute inset-0 bg-luxury-obsidian transform -translate-x-full group-hover/whatsapp:translate-x-0 transition-transform duration-300"></div>
               </button>
             </div>
             
-            <p className="text-center text-gray-600 mt-4 text-sm">
-              {!user && 'Sign in to checkout with PayFast or continue with WhatsApp'}
-            </p>
+             <p className="text-center font-sans-luxury tracking-wide text-luxury-obsidian/70 mt-6 text-sm">
+               {!user && 'Sign in to checkout with PayFast or continue with WhatsApp'}
+             </p>
           </div>
         </div>
       </div>
