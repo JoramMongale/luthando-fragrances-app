@@ -6,3 +6,23 @@ node_modules/
 .vercel
 .DS_Store
 *.sh
+
+# Documentation and planning files
+.planning/
+FIREBASE_CLI_SETUP.md
+NEXT_STEPS_FIREBASE_MIGRATION.md
+NEXT_STEPS_PHASE_2.md
+PHASE_2_IMPLEMENTATION.md
+SETUP_FIREBASE_ADMIN.md
+SETUP_FIREBASE_CONSOLE.md
+VERCEL_FIREBASE_SETUP.md
+
+# Build artifacts
+tsconfig.tsbuildinfo
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
