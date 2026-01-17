@@ -96,21 +96,8 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
     try {
       setLoading(true)
       
-      // Check if user already exists (we'll check in Firestore)
-      const { db } = await import('@/lib/firebase')
-      const { collection, query, where, getDocs } = await import('firebase/firestore')
-      
-      const usersRef = collection(db, 'user_profiles')
-      const q = query(usersRef, where('email', '==', email))
-      const querySnapshot = await getDocs(q)
-      
-      if (!querySnapshot.empty) {
-        return {
-          data: null,
-          error: { message: 'User already exists. Please sign in instead.' }
-        }
-      }
-
+      // Firebase Auth will check if email already exists
+      // and return 'auth/email-already-in-use' error if it does
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       
       console.log('Firebase user created successfully:', userCredential.user.email)
@@ -185,8 +172,10 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
   const resetPassword = async (email: string) => {
     try {
       setLoading(true)
+      // Use production URL for password reset links
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
       await sendPasswordResetEmail(auth, email, {
-        url: `${window.location.origin}/auth/reset-password`,
+        url: `${appUrl}/auth/reset-password`,
       })
       return { data: { success: true }, error: null }
     } catch (error: any) {

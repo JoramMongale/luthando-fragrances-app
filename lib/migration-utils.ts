@@ -1,5 +1,6 @@
 import { getFeatureFlags } from './feature-flags'
-import { supabase } from './supabase'
+// @ts-ignore - Supabase migration utilities (not used in production)
+// import { supabase } from './supabase'
 import { db, auth, storage } from './firebase'
 import { adminDb, adminAuth, adminStorage } from './firebase-admin'
 import type { Product, Order, OrderItem, UserProfile } from '@/types'

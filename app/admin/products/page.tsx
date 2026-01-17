@@ -417,34 +417,60 @@ const handleDelete = async (productId: string) => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Price (ZAR) *
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={formData.price}
-                        onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value) || 0})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
+                   <div className="grid grid-cols-2 gap-4">
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-1">
+                         Price (ZAR) *
+                       </label>
+                       <input
+                         type="number"
+                         min="0"
+                         step="0.01"
+                         value={formData.price === 0 ? '' : formData.price}
+                         onChange={(e) => {
+                           const value = e.target.value;
+                           // Allow empty input
+                           if (value === '') {
+                             setFormData({...formData, price: 0});
+                           } else {
+                             const numValue = parseFloat(value);
+                             // Ensure it's a valid number, allow decimals
+                             if (!isNaN(numValue) && numValue >= 0) {
+                               setFormData({...formData, price: numValue});
+                             }
+                           }
+                         }}
+                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                         required
+                         placeholder="124.99"
+                       />
+                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Stock Quantity *
                       </label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={formData.stock_quantity}
-                        onChange={(e) => setFormData({...formData, stock_quantity: parseInt(e.target.value) || 0})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                      />
+                       <input
+                         type="number"
+                         min="0"
+                         value={formData.stock_quantity === 0 ? '' : formData.stock_quantity}
+                         onChange={(e) => {
+                           const value = e.target.value;
+                           // Allow empty input
+                           if (value === '') {
+                             setFormData({...formData, stock_quantity: 0});
+                           } else {
+                             const intValue = parseInt(value);
+                             // Ensure it's a valid integer
+                             if (!isNaN(intValue) && intValue >= 0) {
+                               setFormData({...formData, stock_quantity: intValue});
+                             }
+                           }
+                         }}
+                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                         required
+                         placeholder="50"
+                       />
                     </div>
                   </div>
 

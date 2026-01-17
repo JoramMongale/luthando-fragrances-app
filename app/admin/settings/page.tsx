@@ -315,15 +315,26 @@ export default function AdminSettings() {
                <label className="block text-sm font-medium text-gray-700 mb-2">
                  Tax Rate (%)
                </label>
-               <input
-                 type="number"
-                 value={settings.tax_rate}
-                 onChange={(e) => handleChange('tax_rate', parseFloat(e.target.value) || 0)}
-                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                 min="0"
-                 max="100"
-                 step="0.1"
-               />
+                <input
+                  type="number"
+                  value={settings.tax_rate === 0 ? '' : settings.tax_rate}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      handleChange('tax_rate', 0);
+                    } else {
+                      const numValue = parseFloat(value);
+                      if (!isNaN(numValue) && numValue >= 0 && numValue <= 100) {
+                        handleChange('tax_rate', numValue);
+                      }
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  placeholder="15"
+                />
              </div>
 
              <div>
@@ -358,14 +369,25 @@ className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R</span>
-              <input
-                type="number"
-                value={settings.shipping_fee}
-                onChange={(e) => handleChange('shipping_fee', parseFloat(e.target.value) || 0)}
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-                step="1"
-              />
+               <input
+                 type="number"
+                 value={settings.shipping_fee === 0 ? '' : settings.shipping_fee}
+                 onChange={(e) => {
+                   const value = e.target.value;
+                   if (value === '') {
+                     handleChange('shipping_fee', 0);
+                   } else {
+                     const numValue = parseFloat(value);
+                     if (!isNaN(numValue) && numValue >= 0) {
+                       handleChange('shipping_fee', numValue);
+                     }
+                   }
+                 }}
+                 className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 min="0"
+                 step="1"
+                 placeholder="100"
+               />
             </div>
           </div>
 
@@ -375,14 +397,25 @@ className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R</span>
-              <input
-                type="number"
-                value={settings.free_shipping_threshold}
-                onChange={(e) => handleChange('free_shipping_threshold', parseFloat(e.target.value) || 0)}
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-                step="1"
-              />
+               <input
+                 type="number"
+                 value={settings.free_shipping_threshold === 0 ? '' : settings.free_shipping_threshold}
+                 onChange={(e) => {
+                   const value = e.target.value;
+                   if (value === '') {
+                     handleChange('free_shipping_threshold', 0);
+                   } else {
+                     const numValue = parseFloat(value);
+                     if (!isNaN(numValue) && numValue >= 0) {
+                       handleChange('free_shipping_threshold', numValue);
+                     }
+                   }
+                 }}
+                 className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 min="0"
+                 step="1"
+                 placeholder="500"
+               />
             </div>
             <p className="text-xs text-gray-500 mt-1">
               Orders above this amount qualify for free shipping
@@ -468,10 +501,21 @@ className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             </label>
             <input
               type="number"
-              value={settings.low_stock_threshold}
-              onChange={(e) => handleChange('low_stock_threshold', parseInt(e.target.value) || 0)}
+              value={settings.low_stock_threshold === 0 ? '' : settings.low_stock_threshold}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === '') {
+                  handleChange('low_stock_threshold', 0);
+                } else {
+                  const intValue = parseInt(value);
+                  if (!isNaN(intValue) && intValue >= 1) {
+                    handleChange('low_stock_threshold', intValue);
+                  }
+                }
+              }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               min="1"
+              placeholder="5"
             />
             <p className="text-xs text-gray-500 mt-1">
               Products below this quantity will be marked as low stock
