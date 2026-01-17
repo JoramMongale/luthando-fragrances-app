@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getOrderStats, getRecentOrders, getAllProducts } from '@/lib/admin-db'
+import { getOrderStats, getRecentOrders, getAllProducts } from '@/lib/unified-db'
 import { formatCurrency } from '@/lib/utils'
 import { ShoppingBag, Package, DollarSign, Clock, TrendingUp } from 'lucide-react'
 import Link from 'next/link'

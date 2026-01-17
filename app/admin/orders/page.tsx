@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
-import { supabase } from '@/lib/supabase'
+import { getAllOrders } from '@/lib/unified-db'
 import { checkAdminAccess } from '@/lib/admin'
 import { useRouter } from 'next/navigation'
 import { formatCurrency } from '@/lib/utils'
@@ -29,15 +29,7 @@ interface OrderWithDetails {
   payment_status: string
   payment_method: string | null
   created_at: string
-  order_items: Array<{
-    id: string
-    quantity: number
-    price: number
-    product: {
-      name: string
-      category: string
-    }
-  }>
+  item_count: number
   user_profile?: {
     first_name: string
     last_name: string
@@ -76,69 +68,34 @@ export default function AdminOrders() {
       setError('')
 
       const limit = 20
-      const offset = (page - 1) * limit
-
-      // Build query
-      let query = supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items (
-            *,
-            product:products (name, category)
-          )
-        `, { count: 'exact' })
-        .order('created_at', { ascending: false })
-
-      if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter)
-      }
-
-      if (searchTerm.trim()) {
-        query = query.ilike('id', `%${searchTerm.trim()}%`)
-      }
-
-      const { data: ordersData, error: ordersError, count } = await query
-        .range(offset, offset + limit - 1)
+      const { data: ordersData, error: ordersError, totalPages } = await getAllOrders(page, limit)
 
       if (ordersError) throw ordersError
 
-      // Calculate total pages
-      const total = Math.ceil((count || 0) / limit)
-      setTotalPages(total)
+      setTotalPages(totalPages)
 
-      // Get user profiles for orders
-      let ordersWithProfiles = ordersData || []
-      
-      // Then get user profiles for each order
-      if (ordersData && ordersData.length > 0) {
-        // Fix the Set iteration issue by using Array.from
-        const userIds = Array.from(new Set(ordersData.map(order => order.user_id)))
-        
-        const { data: profiles, error: profilesError } = await supabase
-          .from('user_profiles')
-          .select('id, first_name, last_name')
-          .in('id', userIds)
-
-        if (!profilesError && profiles) {
-          // Also get user emails from auth.users
-          const { data: authUsers } = await supabase
-            .from('auth.users')
-            .select('id, email')
-            .in('id', userIds)
-
-          ordersWithProfiles = ordersData.map(order => ({
-            ...order,
-            user_profile: {
-              first_name: profiles.find(p => p.id === order.user_id)?.first_name || '',
-              last_name: profiles.find(p => p.id === order.user_id)?.last_name || '',
-              email: authUsers?.find(u => u.id === order.user_id)?.email || 'Unknown'
-            }
-          }))
+      // For now, set orders without user profiles
+      const ordersWithProfiles = ordersData ? ordersData.map(order => ({
+        ...order,
+        user_profile: {
+          first_name: '',
+          last_name: '',
+          email: order.user_id // fallback to user ID
         }
+      })) : []
+
+      // Client-side filtering based on statusFilter and searchTerm
+      let filteredOrders = ordersWithProfiles
+      if (statusFilter !== 'all') {
+        filteredOrders = filteredOrders.filter(order => order.status === statusFilter)
+      }
+      if (searchTerm.trim()) {
+        filteredOrders = filteredOrders.filter(order => 
+          order.id.toLowerCase().includes(searchTerm.trim().toLowerCase())
+        )
       }
 
-      setOrders(ordersWithProfiles)
+      setOrders(filteredOrders)
 
     } catch (err) {
       console.error('Error fetching orders:', err)
@@ -320,11 +277,10 @@ export default function AdminOrders() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">
-                        {order.order_items.length} item{order.order_items.length !== 1 ? 's' : ''}
+                        {order.item_count || 0} item{order.item_count !== 1 ? 's' : ''}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {order.order_items.slice(0, 2).map(item => item.product.name).join(', ')}
-                        {order.order_items.length > 2 && '...'}
+                        {/* Product names not available in simplified version */}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

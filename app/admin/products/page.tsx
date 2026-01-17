@@ -148,7 +148,7 @@ const handleDelete = async (productId: string) => {
   }
 }
   const handleImageUpdate = (imageUrl: string | null, fileName: string | null) => {
-    setFormData(prev => ({
+    setFormData((prev: any) => ({
       ...prev,
       image_url: imageUrl || ''
     }))

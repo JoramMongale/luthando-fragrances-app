@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { getOrderById } from '@/lib/orders'
+import { getOrderById } from '@/lib/unified-db'
 import { CheckCircle, Package, ArrowRight } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 

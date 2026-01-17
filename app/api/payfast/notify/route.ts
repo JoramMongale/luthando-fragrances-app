@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { updateOrderStatus } from '@/lib/orders'
+import { updateOrderStatus } from '@/lib/unified-db'
 import { verifyPayFastSignature, isValidPayFastIP } from '@/lib/payments/payfast'
 import { headers } from 'next/headers'
 
 export async function POST(request: NextRequest) {
   try {
     // Get IP address for validation
-    const headersList = headers()
+    const headersList = await headers()
     const forwardedFor = headersList.get('x-forwarded-for')
     const realIP = headersList.get('x-real-ip')
     const ip = forwardedFor?.split(',')[0] || realIP || ''

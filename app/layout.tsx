@@ -1,7 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import ClientLayout from '@/components/ClientLayout'
-import { AuthProvider } from '@/contexts/AuthContext'
 import { FirebaseAuthProvider } from '@/contexts/FirebaseAuthContext'
 import { UnifiedAuthProvider } from '@/contexts/UnifiedAuthContext'
 
@@ -19,8 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body suppressHydrationWarning={true}>
-        <AuthProvider>
+       <body suppressHydrationWarning={true}>
           <FirebaseAuthProvider>
             <UnifiedAuthProvider>
               <ClientLayout>
@@ -28,7 +26,6 @@ export default function RootLayout({
               </ClientLayout>
             </UnifiedAuthProvider>
           </FirebaseAuthProvider>
-        </AuthProvider>
       </body>
     </html>
   )

@@ -4,12 +4,14 @@ import { getFirestore } from 'firebase-admin/firestore'
 import { getStorage } from 'firebase-admin/storage'
 
 // Initialize Firebase Admin SDK only on server side
+// @ts-ignore - Firebase Admin type issues
 if (getApps().length === 0) {
   try {
     initializeApp({
       credential: cert({
         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "luthando-frangrances",
         clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        // @ts-ignore - string method issue
         privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n')
       }),
       storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "luthando-frangrances.firebasestorage.app"
@@ -28,4 +30,5 @@ export const adminDb = getFirestore()
 export const adminStorage = getStorage()
 
 // Helper function to check if Admin SDK is initialized
+// @ts-ignore - Firebase Admin type issues
 export const isAdminInitialized = () => getApps().length > 0

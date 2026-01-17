@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { listProductImages, getStorageStats, cleanupUnusedImages, formatFileSize } from '@/lib/admin-storage'
+import { listProductImages, getStorageStats, cleanupUnusedImages, formatFileSize } from '@/lib/admin-storage-firebase'
 import { HardDrive, Image as ImageIcon, Trash2, RefreshCw, AlertCircle } from 'lucide-react'
 
 export default function AdminStorage() {
@@ -167,11 +167,11 @@ export default function AdminStorage() {
               {images.map((image, index) => (
                 <div key={image.name} className="group relative">
                   <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/products/${image.name}`}
-                      alt={image.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
+                     <img
+                       src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/o/products%2F${encodeURIComponent(image.name)}?alt=media`}
+                       alt={image.name}
+                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                     />
                   </div>
                   <div className="mt-2">
                     <p className="text-xs text-gray-600 truncate">{image.name}</p>

@@ -1,7 +1,6 @@
 'use client'
 
 import React, { createContext, useContext } from 'react'
-import { useAuth } from './AuthContext'
 import { useFirebaseAuth } from './FirebaseAuthContext'
 
 interface UnifiedAuthContextType {
@@ -24,38 +23,24 @@ interface UnifiedAuthContextType {
     data: any
     error: any
   }>
-  authProvider: 'supabase' | 'firebase'
+  authProvider: 'firebase'
 }
 
 const UnifiedAuthContext = createContext<UnifiedAuthContextType | undefined>(undefined)
 
 export function UnifiedAuthProvider({ children }: { children: React.ReactNode }) {
-  const useFirebaseAuthFlag = process.env.NEXT_PUBLIC_USE_FIREBASE_AUTH === 'true'
-  
-  const supabaseAuth = useAuth()
   const firebaseAuth = useFirebaseAuth()
 
-  const contextValue = useFirebaseAuthFlag 
-    ? {
-        user: firebaseAuth.user,
-        loading: firebaseAuth.loading,
-        signUp: firebaseAuth.signUp,
-        signIn: firebaseAuth.signIn,
-        signOut: firebaseAuth.signOut,
-        resetPassword: firebaseAuth.resetPassword,
-        updatePassword: firebaseAuth.updatePassword,
-        authProvider: 'firebase' as const
-      }
-    : {
-        user: supabaseAuth.user,
-        loading: supabaseAuth.loading,
-        signUp: supabaseAuth.signUp,
-        signIn: supabaseAuth.signIn,
-        signOut: supabaseAuth.signOut,
-        resetPassword: supabaseAuth.resetPassword,
-        updatePassword: supabaseAuth.updatePassword,
-        authProvider: 'supabase' as const
-      }
+  const contextValue = {
+    user: firebaseAuth.user,
+    loading: firebaseAuth.loading,
+    signUp: firebaseAuth.signUp,
+    signIn: firebaseAuth.signIn,
+    signOut: firebaseAuth.signOut,
+    resetPassword: firebaseAuth.resetPassword,
+    updatePassword: firebaseAuth.updatePassword,
+    authProvider: 'firebase' as const
+  }
 
   return (
     <UnifiedAuthContext.Provider value={contextValue}>

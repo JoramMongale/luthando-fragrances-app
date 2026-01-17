@@ -1,18 +1,16 @@
 import { getFeatureFlags } from './feature-flags'
-import * as supabase from './supabase'
 import * as firestore from './firestore-db'
-import * as supabaseOrders from './orders'
-import * as supabaseAdmin from './admin-db'
 import type { Product, Order, OrderItem, CartItem, UserProfile, ShippingAddress } from '@/types'
-import type { ProductFormData } from './admin-db'
-import type { CreateOrderData } from './orders'
+// Types placeholder
+type ProductFormData = any
+type CreateOrderData = any
 
 const { useFirestore } = getFeatureFlags()
 
 // Helper to get the appropriate implementation
-const getImpl = () => useFirestore ? firestore : supabase
-const getOrdersImpl = () => useFirestore ? firestore : supabaseOrders
-const getAdminImpl = () => useFirestore ? firestore : supabaseAdmin
+const getImpl = () => firestore
+const getOrdersImpl = () => firestore
+const getAdminImpl = () => firestore
 
 // Product functions (from supabase.ts)
 export const getProducts = async (category?: string) => {
@@ -71,12 +69,7 @@ export const getRecentOrders = async (limit = 10) => {
 // Order functions (from orders.ts)
 export const validateOrderData = async (orderData: CreateOrderData) => {
   const impl = getOrdersImpl()
-  // @ts-ignore - validateOrderData might not exist in firestore
-  if (impl.validateOrderData) {
-    return impl.validateOrderData(orderData)
-  }
-  // Fallback to supabase implementation
-  return supabaseOrders.validateOrderData(orderData)
+  return impl.validateOrderData(orderData)
 }
 
 export const createOrder = async (orderData: CreateOrderData) => {
@@ -111,23 +104,15 @@ export const getAllOrders = async (page = 1, limit = 20) => {
 // Cart functions
 export const getCartItems = async (userId: string) => {
   const impl = getImpl()
-  // @ts-ignore - getCartItems might not exist in supabase
-  if (impl.getCartItems) {
-    return impl.getCartItems(userId)
-  }
-  // Fallback to firestore implementation or implement supabase version
-  return firestore.getCartItems(userId)
+  return impl.getCartItems(userId)
 }
 
 // User profile functions
 export const getUserProfile = async (userId: string) => {
   const impl = getImpl()
-  // @ts-ignore - getUserProfile might not exist in supabase
-  if (impl.getUserProfile) {
-    return impl.getUserProfile(userId)
-  }
-  return firestore.getUserProfile(userId)
+  return impl.getUserProfile(userId)
 }
 
 // Re-export types for convenience
-export type { Product, Order, OrderItem, CartItem, UserProfile, ProductFormData, CreateOrderData, ShippingAddress }
+export type { Product, Order, OrderItem, CartItem, UserProfile, ShippingAddress }
+export type { ProductFormData, CreateOrderData }

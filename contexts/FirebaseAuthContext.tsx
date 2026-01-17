@@ -50,6 +50,14 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
       if (firebaseUser) {
         setUser(firebaseUser)
         
+        // Set session cookie for middleware with Firebase ID token
+        if (typeof window !== 'undefined') {
+          // Get the Firebase ID token
+          const token = await firebaseUser.getIdToken()
+          // Set cookie with token (1 hour expiry to match token expiry)
+          document.cookie = `session=${token}; path=/; max-age=3600; SameSite=Lax`
+        }
+        
         // Create/update user profile in Firestore
         try {
           // Import dynamically to avoid circular dependencies
@@ -72,6 +80,10 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
         }
       } else {
         setUser(null)
+        // Clear session cookie
+        if (typeof window !== 'undefined') {
+          document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax'
+        }
       }
       
       setLoading(false)

@@ -1,11 +1,7 @@
-import { getFeatureFlags } from './feature-flags'
-import * as supabaseStorage from './storage'
 import * as firebaseStorage from './firebase-storage'
 
-const { useFirebaseStorage } = getFeatureFlags()
-
 // Helper to get the appropriate implementation
-const getImpl = () => useFirebaseStorage ? firebaseStorage : supabaseStorage
+const getImpl = () => firebaseStorage
 
 // Re-export constants
 export const ALLOWED_FILE_TYPES = getImpl().ALLOWED_FILE_TYPES
@@ -35,23 +31,17 @@ export const deleteProductImage = async (fileName: string): Promise<boolean> => 
 }
 
 export const getImageUrl = (fileName: string): string => {
-  const impl = getImpl()
-  // If using Firebase, we need to handle async differently
-  // For compatibility, return empty string and components should use getImageUrlAsync
-  if (useFirebaseStorage) {
-    return '' // Firebase requires async call
-  }
-  return impl.getImageUrl(fileName)
+  // Firebase requires async call, return empty string
+  return ''
 }
 
 // Async version for Firebase compatibility
 export const getImageUrlAsync = async (fileName: string): Promise<string> => {
   const impl = getImpl()
-  if (useFirebaseStorage && 'getImageUrlAsync' in impl) {
+  if ('getImageUrlAsync' in impl) {
     return (impl as any).getImageUrlAsync(fileName)
   }
-  // For Supabase, getImageUrl is synchronous
-  return impl.getImageUrl(fileName)
+  return ''
 }
 
 export const validateImageDimensions = (file: File): Promise<boolean> => {

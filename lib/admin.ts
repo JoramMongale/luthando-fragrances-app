@@ -1,7 +1,9 @@
-// Admin email addresses
-const ADMIN_EMAILS = [
+// Admin email addresses - read from environment variable or fallback
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAIL?.split(',') || []).concat([
   'jorammongale@outlook.com', // Your email added here
-]
+  'admin@luthandofragrances.co.za',
+  'info@luthandofragrances.co.za'
+]).filter(email => email.trim())
 
 export function isAdmin(email: string): boolean {
   const normalizedEmail = email.toLowerCase().trim()

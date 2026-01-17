@@ -11,6 +11,8 @@ export interface Product {
   created_at: string
   updated_at: string
   image_filename: string | null
+  sku?: string
+  featured?: boolean
 }
 
 export interface Order {
@@ -51,8 +53,10 @@ export interface UserProfile {
   id: string
   first_name: string | null
   last_name: string | null
+  email?: string | null
   phone: string | null
   address: any
+  role?: 'user' | 'admin'
   created_at: string
   updated_at: string
 }

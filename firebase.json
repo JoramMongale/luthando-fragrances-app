@@ -7,7 +7,7 @@
   },
   "storage": {
     "rules": "storage.rules",
-    "bucket": "luthando-frangrances.appspot.com"
+    "bucket": "luthando-frangrances.firebasestorage.app"
   },
   "functions": [
     {

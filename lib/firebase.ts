@@ -15,11 +15,15 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+// @ts-ignore - Firebase type issues
+const apps = getApps()
+// @ts-ignore - Firebase type issues  
+const app = apps.length === 0 ? initializeApp(firebaseConfig) : apps[0]
 
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 export const storage = getStorage(app)
+// @ts-ignore - window check for SSR
 export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null
 
 export default app

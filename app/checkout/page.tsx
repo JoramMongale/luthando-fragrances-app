@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { useCartStore } from '@/lib/cart-store'
 import { formatCurrency } from '@/lib/utils'
-import { createOrder } from '@/lib/orders'
+import { createOrder } from '@/lib/unified-db'
 import { generatePayFastForm, submitPayFastForm } from '@/lib/payments/payfast'
 import { openWhatsApp, formatOrderMessage } from '@/lib/whatsapp'
 import { ArrowLeft, CreditCard, MessageCircle, Loader2 } from 'lucide-react'
@@ -96,7 +96,7 @@ export default function CheckoutPage() {
       const { order, error: orderError } = await createOrder(orderData)
       
       if (orderError || !order) {
-        throw new Error(orderError?.message || 'Failed to create order')
+        throw new Error((orderError as any)?.message || 'Failed to create order')
       }
 
       // Generate PayFast form

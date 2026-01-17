@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
-import { getUserOrders } from '@/lib/orders'
+import { getUserOrders } from '@/lib/unified-db'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Package, Calendar, CreditCard, Truck, CheckCircle, XCircle, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -53,7 +53,7 @@ export default function OrdersPage() {
      if (error) {
        throw error
      }
-     setOrders(data || [])
+      setOrders((data as any) || [])
    } catch (err) {
      console.error('Error fetching orders:', err)
      setError('Failed to load orders')
