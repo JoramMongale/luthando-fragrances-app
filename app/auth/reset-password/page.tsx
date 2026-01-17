@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { Lock, Eye, EyeOff } from 'lucide-react'
 
 export default function ResetPasswordPage() {
@@ -12,7 +12,7 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   
-  const { updatePassword, loading } = useAuth() // Use global loading state
+  const { updatePassword, loading } = useUnifiedAuth() // Use global loading state
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {

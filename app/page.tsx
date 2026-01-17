@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import ProductCard from '@/components/ProductCard'
-import { getProducts } from '@/lib/supabase'
+import { getProducts } from '@/lib/unified-db'
 import { openWhatsApp } from '@/lib/whatsapp'
 import { Star, Truck, Shield, MessageCircle } from 'lucide-react'
 import type { Product } from '@/types'

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getAllProducts, createProduct, updateProduct, deleteProduct, ProductFormData } from '@/lib/admin-db'
+import { getAllProducts, createProduct, updateProduct, deleteProduct, ProductFormData } from '@/lib/unified-db'
 import { formatCurrency } from '@/lib/utils'
 import ImageUpload from '@/components/admin/ImageUpload'
 import { 
@@ -134,8 +134,8 @@ const handleDelete = async (productId: string) => {
     const { error } = await deleteProduct(productId)
     if (error) {
       // Handle both error object formats
-      const errorMessage = typeof error === 'object' && error.message 
-        ? error.message 
+      const errorMessage = error && typeof error === 'object' && 'message' in error 
+        ? (error as any).message 
         : 'Failed to deactivate product'
       throw new Error(errorMessage)
     }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 
 export default function RegisterPage() {
@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   
-  const { signUp, user } = useAuth()
+  const { signUp, user } = useUnifiedAuth()
   const router = useRouter()
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { supabase } from '@/lib/supabase'
 import { checkAdminAccess } from '@/lib/admin'
 import { useRouter } from 'next/navigation'
@@ -46,7 +46,7 @@ interface OrderWithDetails {
 }
 
 export default function AdminOrders() {
-  const { user } = useAuth()
+  const { user } = useUnifiedAuth()
   const router = useRouter()
   const [orders, setOrders] = useState<OrderWithDetails[]>([])
   const [loading, setLoading] = useState(true)

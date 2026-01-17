@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { Mail, ArrowLeft } from 'lucide-react'
 
 export default function ForgotPasswordPage() {
@@ -11,7 +11,7 @@ export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   
-  const { resetPassword } = useAuth()
+  const { resetPassword } = useUnifiedAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

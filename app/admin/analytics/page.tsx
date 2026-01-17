@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { supabase } from '@/lib/supabase'
 import { checkAdminAccess } from '@/lib/admin'
 import { useRouter } from 'next/navigation'
@@ -30,7 +30,7 @@ interface AnalyticsData {
 }
 
 export default function AdminAnalytics() {
-  const { user } = useAuth()
+  const { user } = useUnifiedAuth()
   const router = useRouter()
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     totalRevenue: 0,

@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { checkAdminAccess } from '@/lib/admin'
 import { 
   LayoutDashboard, 
@@ -34,7 +34,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, signOut } = useAuth()
+  const { user, signOut } = useUnifiedAuth()
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = React.useState(false)

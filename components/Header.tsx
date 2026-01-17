@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ShoppingCart, Menu, X, MessageCircle, User, LogOut, Package } from 'lucide-react'
 import { openWhatsApp } from '@/lib/whatsapp'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { useCartStore } from '@/lib/cart-store'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const { user, signOut } = useAuth()
+  const { user, signOut } = useUnifiedAuth()
   const cartStore = useCartStore()
 
   useEffect(() => {

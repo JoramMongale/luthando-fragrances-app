@@ -63,10 +63,13 @@ Key existing patterns:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Migrate to full Firebase suite | Cost reduction is primary goal | — Pending |
-| Maintain existing frontend | UI/UX is working well, focus on backend | — Pending |
-| Add comprehensive testing | Production app needs reliability | — Pending |
-| Zero-downtime migration | Production app cannot be taken offline | — Pending |
+| Migrate to full Firebase suite | Cost reduction is primary goal | ✅ Planned in Phase 1 |
+| Maintain existing frontend | UI/UX is working well, focus on backend | ✅ Frontend remains unchanged |
+| Add comprehensive testing | Production app needs reliability | ✅ Planned in Phase 5 |
+| Zero-downtime migration | Production app cannot be taken offline | ✅ Feature flag approach planned |
+| Gradual migration with dual operation | Minimize risk and ensure continuity | ✅ Core strategy for all phases |
+| Passwordless user migration | Secure and simple user transition | ✅ Phase 2 implementation plan |
+| Firestore denormalized data model | Optimize for NoSQL query patterns | ✅ Phase 3 data structure designed |
 
 ---
 *Last updated: 2026-01-16 after initialization*

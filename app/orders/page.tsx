@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { getUserOrders } from '@/lib/orders'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Package, Calendar, CreditCard, Truck, CheckCircle, XCircle, Clock, ArrowLeft } from 'lucide-react'
@@ -32,7 +32,7 @@ export default function OrdersPage() {
  const [orders, setOrders] = useState<OrderWithItems[]>([])
  const [loading, setLoading] = useState(true)
  const [error, setError] = useState('')
- const { user } = useAuth()
+ const { user } = useUnifiedAuth()
  const router = useRouter()
 
  useEffect(() => {

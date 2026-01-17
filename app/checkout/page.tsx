@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { useCartStore } from '@/lib/cart-store'
 import { formatCurrency } from '@/lib/utils'
 import { createOrder } from '@/lib/orders'
@@ -24,7 +24,7 @@ export default function CheckoutPage() {
     postalCode: ''
   })
 
-  const { user } = useAuth()
+  const { user } = useUnifiedAuth()
   const cartStore = useCartStore()
   const router = useRouter()
 

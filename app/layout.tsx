@@ -2,6 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 import ClientLayout from '@/components/ClientLayout'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { FirebaseAuthProvider } from '@/contexts/FirebaseAuthContext'
+import { UnifiedAuthProvider } from '@/contexts/UnifiedAuthContext'
 
 export const metadata: Metadata = {
   title: 'Luthando Fragrances | Premium Perfumes from South Africa',
@@ -19,9 +21,13 @@ export default function RootLayout({
       <head />
       <body suppressHydrationWarning={true}>
         <AuthProvider>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
+          <FirebaseAuthProvider>
+            <UnifiedAuthProvider>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+            </UnifiedAuthProvider>
+          </FirebaseAuthProvider>
         </AuthProvider>
       </body>
     </html>

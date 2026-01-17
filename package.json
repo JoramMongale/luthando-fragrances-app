@@ -6,15 +6,32 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:firebase": "node scripts/test-firebase.js",
+    "test:firebase-auth": "node scripts/test-firebase-auth.js",
+    "test:migration": "node scripts/test-migration.js",
+    "setup:firebase-only": "node scripts/setup-firebase-only.js",
+    "fix:firebase-auth": "node scripts/fix-firebase-auth.js",
+    "toggle:firebase-services": "node scripts/toggle-firebase-services.js",
+    "verify:setup": "node scripts/verify-setup.js",
+    "migrate:products": "tsx scripts/migrate-products.ts",
+    "migrate:users": "tsx scripts/migrate-users.ts",
+    "migrate:orders": "tsx scripts/migrate-orders.ts",
+    "validate:migration": "tsx scripts/validate-migration.ts",
+    "firebase:emulators": "firebase emulators:start",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage:rules"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "@hookform/resolvers": "^5.2.1",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.53.0",
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "firebase": "^12.8.0",
+    "firebase-admin": "^13.6.0",
     "lucide-react": "^0.536.0",
     "next": "^15.4.5",
     "react": "^19.1.1",
@@ -39,6 +56,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.2"
   }
 }

@@ -9,7 +9,7 @@ import {
   MAX_FILE_SIZE,
   createImagePreview,
   cleanupPreview
-} from '@/lib/storage'
+} from '@/lib/unified-storage'
 import { 
   Upload, 
   X, 

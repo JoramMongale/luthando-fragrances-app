@@ -31,3 +31,41 @@ export const getProduct = async (id: string) => {
   
   return { data: data as Product | null, error }
 }
+
+// Cart functions
+export const getCartItems = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('cart_items')
+      .select(`
+        *,
+        product:products (*)
+      `)
+      .eq('user_id', userId)
+    
+    if (error) throw error
+    
+    return { data, error: null }
+  } catch (error) {
+    console.error('Supabase getCartItems error:', error)
+    return { data: null, error }
+  }
+}
+
+// User profile functions
+export const getUserProfile = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
+    
+    if (error) throw error
+    
+    return { data, error: null }
+  } catch (error) {
+    console.error('Supabase getUserProfile error:', error)
+    return { data: null, error }
+  }
+}

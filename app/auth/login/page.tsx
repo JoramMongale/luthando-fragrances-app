@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 
 export default function LoginPage() {
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   
-  const { signIn } = useAuth()
+  const { signIn } = useUnifiedAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -7,12 +7,12 @@ import { useCartStore } from '@/lib/cart-store'
 import { formatCurrency } from '@/lib/utils'
 import { openWhatsApp, formatOrderMessage } from '@/lib/whatsapp'
 import { Minus, Plus, Trash2, ArrowLeft, ShoppingCart, CreditCard } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false)
   const cartStore = useCartStore()
-  const { user } = useAuth()
+  const { user } = useUnifiedAuth()
   const router = useRouter()
 
   useEffect(() => {

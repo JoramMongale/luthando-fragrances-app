@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUnifiedAuth } from '@/contexts/UnifiedAuthContext'
 import { useRouter } from 'next/navigation'
 import { User, Mail, Phone, MapPin, Package, LogOut, Edit } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ProfilePage() {
-  const { user, signOut } = useAuth()
+  const { user, signOut } = useUnifiedAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
